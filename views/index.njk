@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lightboard Arduino/Socket.io Demonstration</title>
+
+  <!-- Styles -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- Vue -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
+
+</head>
+<body>
+
+  <div class="container" id="lightboard">
+    <div class="row">
+
+      <div v-for="(light, i) in lights" class="col-xs-1" :class="{ 'col-xs-offset-2': i == 0 }">
+        <button class="light-button" :class="{ active: lights[i] }" v-on:click="toggleLight(light, i)"></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Load Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+
+    // Open socket connection
+    var socket = io();
+
+    // Convert incoming binary signals to arrays
+    // and apply them to the front end
+    socket.on('signal', function(signal) {
+      console.log('heard something: '+signal);
+      signal = signal.split('');
+      for(var i in signal) {
+        signal[i] = parseInt(signal[i]);
+      }
+      lightboard.lights = signal;
+    });
+  </script>
+
+  <script>
+
+    // Vue Setup
+    var lightboard = new Vue({
+      el: '#lightboard',
+      data: function() {
+        return {
+
+          {# If a light pattern has already been set on the server, use it #}
+          {% if currentSignal %}
+          lights: [{{ currentSignal }}]
+
+          {# Otherwise, turn them all off #}
+          {% else %}
+          lights: [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+          ]
+          {% endif %}
+
+        }
+      },
+
+      methods: {
+
+        // When user clicks a light, convert
+        // the current pattern to binary string
+        // and send it to the server via socket
+
+        toggleLight: function(light, i) {
+
+          if (light == 0) {
+            Vue.set(this.lights, i, 1);
+          } else {
+            Vue.set(this.lights, i, 0);
+          }
+
+          var strung = this.lights.join('');
+
+          socket.emit('signal', strung);
+
+        }
+      },
+
+      mounted: function() {
+        console.log("it's lit");
+      }
+
+    });
+  </script>
+
+
+</body>
+</html>
