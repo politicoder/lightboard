@@ -2,7 +2,7 @@
 
 Control a series of 8 LEDs with a pure JavaScript web interface utilizing Node, Vue, Socket.io, Nunjucks, and Johnny Five.
 
-![Web Interface controlling 8 LEDs](http://www.leemichaelmoran.com/img/lightboard.jpg)
+![Web Interface controlling 8 LEDs](http://www.leemichaelmoran.com/img/lightboard/lightboard.jpg)
 
 ### Requirements
 - **NodeJS** installed on both a web server and the computer connected to your Arduino controller
@@ -16,6 +16,9 @@ Control a series of 8 LEDs with a pure JavaScript web interface utilizing Node, 
 - **bridge.js** listens to the server for light pattern signals and sends them to a shift register on your Arduino board via [Johnny Five](http://johnny-five.io/)
 - **/public/assets/** static CSS and a background image for aesthetics
 - **diagram.fzz** A [Fritzing](http://fritzing.org/) diagram of the breadboard
+
+### Diagram
+![Fritizing diagram of the example breadboard](http://www.leemichaelmoran.com/img/lightboard/diagram.jpg)
 
 ### Instructions
 
